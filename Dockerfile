@@ -9,6 +9,10 @@ ARG MYSQL_ROOT_PASSWD=root
 USER root
 
 RUN apt-get -qy update
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 RUN echo "mysql-server-5.6 mysql-server/root_password password $MYSQL_ROOT_PASSWD" | debconf-set-selections
 RUN echo "mysql-server-5.6 mysql-server/root_password_again password $MYSQL_ROOT_PASSWD" | debconf-set-selections
 RUN apt-get install -qy mysql-client mysql-server libmysqlclient-dev
