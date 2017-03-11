@@ -9,10 +9,10 @@ ARG MYSQL_ROOT_PASSWD=root
 USER root
 
 RUN apt-get -qy update
+
+# Set system locale
+RUN apt-get install -qy locales
 RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
 
 # Setup MYSQL
 RUN echo "mysql-server-5.6 mysql-server/root_password password $MYSQL_ROOT_PASSWD" | debconf-set-selections
@@ -25,6 +25,7 @@ RUN apt-get install -qy build-essential git-core curl python-software-properties
 
 # Setup Redis
 RUN apt-get install -qy redis-server
+RUN /etc/init.d/redis-server start
 
 # Setup Sudo
 RUN apt-get install -qy sudo
@@ -34,11 +35,6 @@ RUN echo "local all jenkins trust" >> /etc/postgresql/9.4/main/pg_hba.conf
 
 USER postgres
 
-psql -c "CREATE ROLE jenkins WITH SUPERUSER LOGIN;"
-psql -c "ALTER ROLE jenkins WITH CREATEDB;"
-RUN /etc/init.d/postgresql start
-
-USER redis
-RUN /etc/init.d/redis-server start
+RUN /etc/init.d/postgresql start && psql -c "CREATE ROLE jenkins WITH SUPERUSER LOGIN;" && psql -c "ALTER ROLE jenkins WITH CREATEDB;"
 
 USER jenkins
