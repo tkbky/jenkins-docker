@@ -13,6 +13,7 @@ RUN echo "mysql-server-5.6 mysql-server/root_password password $MYSQL_ROOT_PASSW
 RUN echo "mysql-server-5.6 mysql-server/root_password_again password $MYSQL_ROOT_PASSWD" | debconf-set-selections
 RUN apt-get install -qy mysql-client mysql-server libmysqlclient-dev
 RUN apt-get install -qy postgresql postgresql-contrib libpq-dev
+RUN apt-get install -y build-essential git-core curl python-software-properties
 RUN apt-get install -qy sudo
 
 RUN usermod -aG sudo jenkins
