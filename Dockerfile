@@ -15,8 +15,14 @@ RUN apt-get install -qy mysql-client mysql-server libmysqlclient-dev
 RUN apt-get install -qy postgresql postgresql-contrib libpq-dev
 RUN apt-get install -y build-essential git-core curl python-software-properties
 RUN apt-get install -qy sudo
-
 RUN usermod -aG sudo jenkins
 RUN echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "local all jenkins trust" >> /etc/postgresql/9.4/main/pg_hba.conf
+
+USER postgres
+
+psql -c "CREATE ROLE jenkins WITH SUPERUSER LOGIN;"
+psql -c "ALTER ROLE jenkins WITH CREATEDB;"
+RUN /etc/init.d/postgresql start
 
 USER jenkins
